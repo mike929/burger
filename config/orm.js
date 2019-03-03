@@ -6,35 +6,53 @@ var connection = require("./connection.js");
 // The ? signs are for swapping out other values
 // These help avoid SQL injection
 // https://en.wikipedia.org/wiki/SQL_injection
-var orm = {
-  selectWhere: function(tableInput, colToSearch, valOfCol) {
-    var queryString = "SELECT * FROM ?? WHERE ?? = ?";
-    connection.query(queryString, [tableInput, colToSearch, valOfCol], function(err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-  },
-  selectAndOrder: function(whatToSelect, table, orderCol) {
-    var queryString = "SELECT ?? FROM ?? ORDER BY ?? DESC";
-    console.log(queryString);
-    connection.query(queryString, [whatToSelect, table, orderCol], function(err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-  },
-  findWhoHasMost: function(tableOneCol, tableTwoForeignKey, tableOne, tableTwo) {
-    var queryString =
-      "SELECT ??, COUNT(??) AS count FROM ?? LEFT JOIN ?? ON ??.??= ??.id GROUP BY ?? ORDER BY count DESC LIMIT 1";
+//Import (require) connection.js into orm.js
+var connection = require('../config/connection.js')
 
-    connection.query(
-      queryString,
-      [tableOneCol, tableOneCol, tableOne, tableTwo, tableTwo, tableTwoForeignKey, tableOne, tableOneCol],
-      function(err, result) {
-        if (err) throw err;
-        console.log(result);
-      }
-    );
-  }
+//Create the methods that will execute the necessary MySQL commands in the controllers. 
+//These are the methods you will need to use in order to retrieve and store data in your database.
+
+var orm = 
+{
+
+	//selectAll()
+
+	selectAll: function(callback) 
+	{
+		//mySQL Query
+		connection.query('SELECT * FROM burgers', function(err, result)
+		{
+			if (err) throw err;
+			callback(result);
+		});
+	},
+
+	//insertOne()
+	insertOne: function(burger_name, callback)
+	{
+		connection.query('INSERT INTO burgers SET ?', 
+			{	burger_name: burger_name,
+				devoured: false,
+			}, function(err, result)
+			{
+				if (err) throw err;
+				callback(result);
+			});
+				
+	},
+
+	//updateOne()
+	updateOne: function(burgerID, callback)
+	{
+		connection.query('UPDATE burgers SET ? WHERE ?', [{devoured: true}, {id: burgerID}],
+			function(err, result)
+			{
+				if (err) throw err;
+				callback(result);
+			});
+	}
 };
 
+
+// Export the ORM object in module.exports.
 module.exports = orm;
