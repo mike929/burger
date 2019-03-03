@@ -1,4 +1,5 @@
 var express = require("express");
+const path = require('path')
 
 var PORT = process.env.PORT || 8080;
 
@@ -8,7 +9,8 @@ var app = express();
 // app.use(express.static("public"));
 // app.use(express.static(path.join(__dirname + '/public')));
 // app.use("/public", express.static(path.resolve(__dirname, 'public')));
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname,"public")));
 
 
 // Parse application body as JSON
