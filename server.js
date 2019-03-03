@@ -6,7 +6,10 @@ var app = express();
 
 // Serve static content for the app from the "public" directory in the application directory.
 // app.use(express.static("public"));
+// app.use(express.static(path.join(__dirname + '/public')));
+// app.use("/public", express.static(path.resolve(__dirname, 'public')));
 app.use(express.static(__dirname + '/public'));
+
 
 // Parse application body as JSON
 app.use(express.urlencoded({ extended: true }));
@@ -19,9 +22,9 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Import routes and give the server access to them.
-var routes = require("./controllers/burgers_controller.js");
+var router = require("./controllers/burgers_controller.js");
 
-app.use(routes);
+app.use('/', router);
 
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function() {
